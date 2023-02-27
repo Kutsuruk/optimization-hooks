@@ -1,5 +1,44 @@
 import React from "react";
 import CollapseWrapper from "../common/collapse";
+import Divider from "../common/divider";
+import SmallTitle from "../common/typografy/smallTitle";
+import Card from "../common/Card";
+import Component from "../examples/hoc/someComponent";
+
+const SimpleComponent = ({ onLogin, onLogout, isAuth }) => {
+    return(
+        <>
+            {
+                isAuth ? (
+                    <button className='btn btn-primary' onClick={onLogout}>Выйти из системы</button>
+                ) : (
+                    <button className='btn btn-primary' onClick={onLogin}>Войти</button>
+                )
+            }
+        </>
+    )
+}
+
+//HOC component
+const withFunction = (Component) => (props) => {
+    const isAuth = !!localStorage.getItem('auth')
+
+    const onLogin = () => {
+        localStorage.setItem('auth', 'token')
+    }
+
+    const onLogout = () => {
+        localStorage.removeItem('auth')
+    }
+
+    return (
+        <Card>
+            <Component {...props} isAuth={isAuth} onLogin={onLogin} onLogout={onLogout} />
+        </Card>
+    )
+}
+
+const ComponentWithHoc = withFunction(SimpleComponent)
 
 const HocExercise = () => {
     return (
@@ -76,6 +115,10 @@ const HocExercise = () => {
                 <code>SimpleComponent</code> обновится после перезагрузки
                 страницы
             </p>
+            <Divider />
+            <SmallTitle>Решение</SmallTitle>
+
+            <ComponentWithHoc />
         </CollapseWrapper>
     );
 };
